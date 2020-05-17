@@ -1,12 +1,12 @@
 <?php
 
-use yii\helpers\ArrayHelper;
-use app\models\Category;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
+use app\models\Category;
+
 /* @var $this yii\web\View */
-/* @var $model app\models\Category */
+/* @var $model common\models\Category */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -14,14 +14,23 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'parent_id')->dropDownList(ArrayHelper::map(Category::find()->all(),'id', 'name'), ['prompt' => 'Select']) ?>
+    <div class='form-group field-attribute-parentId'>
+        <?= Html::label('Parent', 'parent', ['class' => 'control-label']);?>
+        <?= Html::dropdownList(
+            'Category[parentId]',
+            $model->parentId,
+            Category::getTree($model->id),
+            ['prompt' => 'No Parent (saved as root)', 'class' => 'form-control']
+        );?>
+
+    </div>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'status')->dropDownList([1 => 'Active', 0 => 'Passive']) ?>
+<!--    --><?php //echo $form->field($model, 'position')->textInput(['type' => 'number']) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

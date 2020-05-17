@@ -15,7 +15,7 @@ use zhuravljov\yii\widgets\DateTimePicker;
     <?php $form = ActiveForm::begin(); ?>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 col-md-offset-3">
             <?php
             echo $form->field($model, 'img')->widget(InputFile::className(), [
                 'language'      => 'ru',
@@ -49,13 +49,11 @@ use zhuravljov\yii\widgets\DateTimePicker;
                     ]) ?>
                 </div>
             </div>
+            <div class="form-group">
+                <?= Html::submitButton('Save', ['class' => 'btn btn-success btn-block']) ?>
+            </div>
         </div>
     </div>
-
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
-    </div>
-
     <?php ActiveForm::end(); ?>
 
 </div>

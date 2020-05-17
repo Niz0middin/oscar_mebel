@@ -9,6 +9,7 @@ use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * SaleController implements the CRUD actions for Sale model.
@@ -157,9 +158,20 @@ class SaleController extends Controller
     }
 
 
-    public function actionApi(){
-//        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        $rates = Sale::find()->asArray()->one();
-        return Json::encode($rates);
+    public function actionAll(){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return Sale::find()->all();
+    }
+
+    public function actionLast(){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $rate = Sale::find()->orderBy(['id' => SORT_DESC])->one();
+        return $rate;
+    }
+
+    public function actionOne($id){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $rate = $this->findModel($id);
+        return $rate;
     }
 }

@@ -22,6 +22,8 @@ bot.onText(/\/start/,(msg)=>{
             resize_keyboard:true
         }
     })
+
+    
 })
 
 
@@ -29,33 +31,6 @@ bot.onText(/\/start/,(msg)=>{
 bot.on('message',(msg)=>{
     const chatId = helper.getChatId(msg)
 
-    if(msg.text=='aksiya'){
-     console.log(msg.text)
-    
-    bot.deleteMessage(chatId,msg.message_id)
-    .then(()=>{
-    ////
-        fetch('http://oscar/api/sales')
-            .then(response => response.json())
-            .then(data => {
-            	console.log(data.length-1)
-                bot.sendMessage(chatId,'Акция на OSCAR MEBEL',{
-                    reply_markup:{
-                        keyboard:keyboard.exit,
-                        resize_keyboard:true
-                    }
-                })
-                bot.sendChatAction(chatId,'upload_photo')
-                .then(()=>{
-                        //10 charecterni bowidigini kesib tawimz 
-                        bot.sendPhoto(chatId,'.'+data[data.length-1].img.substr(10,data[data.length-1].img.length))
-                })
-                
-             })
-            .catch(err => {console(err)})
-            ///////
-    })
-    }
 
     switch(msg.text){
         case kb.main.catalogues:
@@ -67,9 +42,10 @@ bot.on('message',(msg)=>{
                         resize_keyboard:true
                     }
                 }).then(()=>{
+                    //buyoda catalogues dgan object fetch qiladi list of lists ni
                     bot.sendMessage(chatId,'Выберите один из каталогов:',{
                         reply_markup:{
-                            inline_keyboard:ikb.catalogues
+                            inline_keyboard:ikb.root
                         }
                     })
                 })
@@ -83,7 +59,7 @@ bot.on('message',(msg)=>{
         case kb.main.sale:
             console.log('sale')
             
-            fetch('http://oscar/api/sales')
+            fetch('http://oscar/sale/one?id=4')
             .then(response => response.json())
             .then(data => {
                 bot.sendMessage(chatId,'Акция на OSCAR MEBEL',{
@@ -105,8 +81,7 @@ bot.on('message',(msg)=>{
              })
             .catch(err => {console(err)})
             break
-
-
+            
 
         case kb.main.about:
             console.log('about')
@@ -115,12 +90,33 @@ bot.on('message',(msg)=>{
             .then(()=>{
                 bot.sendMessage(chatId,title+'\n\n📍 Наш адрес: ____\n⏩ Оринтир:_____\n☎️ Телефон:_____\n📲 Телеграм:@____',{
                     reply_markup:{
-                        keyboard:keyboard.exit,
+                        keyboard:keyboard.exitabout,
                         resize_keyboard:true
                     },
                     parse_mode:'HTML'
                 })
             })
+            break
+       
+
+        case kb.exitabout.back:
+            const message1 = `Выберитье раздел:`
+            bot.sendMessage(helper.getChatId(msg),message1,{
+                reply_markup:{
+                    keyboard:keyboard.main,
+                    resize_keyboard:true
+                }
+            })
+            break
+        case kb.exit.mcatalogue:
+            
+                bot.sendMessage(helper.getChatId(msg),'Выберите раздел чтобы вывести список товаров:',{
+                    reply_markup:{
+                        inline_keyboard:ikb.root 
+                    }
+                })
+            
+            
             break
         case kb.exit.exit:
             const message = `Выберитье раздел:`
@@ -132,4 +128,45 @@ bot.on('message',(msg)=>{
             })
             break
     }
+})
+
+bot.on('callback_query',query=>{
+    //agar sub-category bosa inline-KEYBOARD jonatadigan holat >>>>[1API] dan olidn Fetch qilib
+    if(query.data.slice(0,2)=='sc'){
+        bot.deleteMessage(query.message.chat.id,query.message.message_id)
+        .then(()=>{
+            bot.sendMessage(query.message.chat.id,'Выберите раздел чтобы вывести список товаров:',{
+                reply_markup:{
+                    inline_keyboard:ikb[query.data], //shuyoga api digi DATA ni assign
+                    
+                }
+            })
+        })
+    }
+    //bu har doim shunaqa root bn boshlanadi
+    else if(query.data=='root'){
+        
+    }
+    //agar sc bomasa goods jonatadi boshqa >>>>>>>>>>>>>>>>>>>[2API] dan
+    else{
+        var goods = ikb[query.data] //shuyoga api digi DATA ni assign qilish
+        
+            goods.forEach(good=>{
+                bot.sendChatAction(query.message.chat.id,'upload_photo')
+                .then(()=>{
+                    bot.sendPhoto(query.message.chat.id,good.picture,{
+                        caption: good.description,
+                        reply_markup:{
+                            inline_keyboard:[
+                                [{text:'Для информации',url:'https://t.me/Oscarofficefurniture_bot'}]
+                            ]
+                        }
+                    })
+                })
+                
+                
+            })
+        }
+
+
 })

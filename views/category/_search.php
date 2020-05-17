@@ -13,17 +13,26 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+        'options' => [
+            'data-pjax' => 1
+        ],
     ]); ?>
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'parent_id') ?>
-
     <?= $form->field($model, 'name') ?>
 
-    <?= $form->field($model, 'status') ?>
+    <?= $form->field($model, 'tree') ?>
 
-    <?= $form->field($model, 'created_at') ?>
+    <?= $form->field($model, 'lft') ?>
+
+    <?= $form->field($model, 'rgt') ?>
+
+    <?php // echo $form->field($model, 'depth') ?>
+
+    <?php // echo $form->field($model, 'position') ?>
+
+    <?php // echo $form->field($model, 'created_at') ?>
 
     <?php // echo $form->field($model, 'updated_at') ?>
 

@@ -8,6 +8,7 @@ use app\models\search\CategorySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * CategoryController implements the CRUD actions for Category model.
@@ -15,7 +16,7 @@ use yii\filters\VerbFilter;
 class CategoryController extends Controller
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function behaviors()
     {
@@ -48,7 +49,6 @@ class CategoryController extends Controller
      * Displays a single Category model.
      * @param integer $id
      * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {
@@ -66,10 +66,22 @@ class CategoryController extends Controller
     {
         $model = new Category();
 
-        if ($model->load(Yii::$app->request->post())) {
-            $model->parent_id = empty($model->parent_id) ? 0 : $model->parent_id;
-            $model->save();
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ( ! empty(Yii::$app->request->post('Category')))
+        {
+            $post            = Yii::$app->request->post('Category');
+            $model->name     = $post['name'];
+            $model->position = $post['position'];
+            $parent_id       = $post['parentId'];
+
+            if (empty($parent_id))
+                $model->makeRoot();
+            else
+            {
+                $parent = Category::findOne($parent_id);
+                $model->appendTo($parent);
+            }
+
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -82,14 +94,37 @@ class CategoryController extends Controller
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ( ! empty(Yii::$app->request->post('Category')))
+        {
+            $post            = Yii::$app->request->post('Category');
+
+            $model->name     = $post['name'];
+            $model->position = $post['position'];
+            $parent_id       = $post['parentId'];
+
+            if ($model->save())
+            {
+                if (empty($parent_id))
+                {
+                    if ( ! $model->isRoot())
+                        $model->makeRoot();
+                }
+                else // move node to other root
+                {
+                    if ($model->id != $parent_id)
+                    {
+                        $parent = Category::findOne($parent_id);
+                        $model->appendTo($parent);
+                    }
+                }
+
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [
@@ -102,11 +137,15 @@ class CategoryController extends Controller
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        if ($model->isRoot())
+            $model->deleteWithChildren();
+        else
+            $model->delete();
 
         return $this->redirect(['index']);
     }
@@ -122,8 +161,27 @@ class CategoryController extends Controller
     {
         if (($model = Category::findOne($id)) !== null) {
             return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+    public function actionList(){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $root = Category::find()->select(['name', 'id', 'tree','depth'])->where(['depth' => 0])->asArray()->all();
+
+            $array[] = [
+                'root' => $root,
+            ];
+            foreach ($root as $r){
+                $sc = Category::find()->select(['name', 'id', 'tree', 'depth'])->where(['depth' => 1])->andWhere(['tree' => $r['tree']])->asArray()->all();
+                $array[] = [
+                   'sc'.$r['tree'] => [
+                        $sc
+                   ]
+                ];
+            }
+
+        return $array;
     }
 }

@@ -1,8 +1,9 @@
 <?php
 
+use app\models\Category;
 use yii\helpers\Html;
 use yii\grid\GridView;
-
+use yii\widgets\Pjax;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\search\CategorySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -18,6 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Category', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
+    <?php Pjax::begin(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
@@ -26,33 +28,42 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
+//            'id',
             'name',
             [
-                'attribute' => 'parent_id',
-                'value' => function($model){
-                    $name = \app\models\Category::find()->where(['id' => $model->parent_id])->one()->name;
-                    return $name;
+                'attribute' => 'tree',
+                'label' => 'Root',
+                'filter' => Category::find()->roots()->select('name, id')->indexBy('id')->column(),
+                'value' => function ($model)
+                {
+                    if ( ! $model->isRoot())
+                        return $model->parents()->one()->name;
+
+                    return '-';
                 }
             ],
             [
-                'attribute' => 'status',
+                'attribute' => 'parent',
                 'value' => function($model){
-                    if ($model->status == 1){
-                        $status = "Active";
-                    }elseif ($model->status == 0){
-                        $status = "Passive";
+                    if (isset($model->parent->name)){
+                        return $model->parent->name;
                     }else{
-                        $status = '';
+                        return '-';
                     }
-                    return $status;
-                }
+                },
             ],
-//            'created_at',
-            //'updated_at',
+//            'parent.name',
+            // 'lft',
+            // 'rgt',
+            // 'depth',
+//            'position',
+            // 'created_at',
+            // 'updated_at',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 
+    <?php Pjax::end(); ?>
 
 </div>
