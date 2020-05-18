@@ -168,20 +168,53 @@ class CategoryController extends Controller
 
     public function actionList(){
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $root = Category::find()->select(['name', 'id', 'tree','depth'])->where(['depth' => 0])->asArray()->all();
-
-            $array[] = [
-                'root' => $root,
+        $roots = Category::find()->roots()->all();
+//        $leaves = Category::find()->leaves()->all();
+//        $one_leaves = Category::findOne(['name' => 'Telefon'])->leaves()->all();
+//        $array['root'] = $roots;
+//        foreach ($roots as $k => $root) {
+        $root = $roots[0];
+            $array['root'][0] = [
+                'text' => $root->name,
+                'callback_data' => 'sc'.$root->tree
             ];
-            foreach ($root as $r){
-                $sc = Category::find()->select(['name', 'id', 'tree', 'depth'])->where(['depth' => 1])->andWhere(['tree' => $r['tree']])->asArray()->all();
-                $array[] = [
-                   'sc'.$r['tree'] => [
-                        $sc
-                   ]
-                ];
+            for ($i=0;$i<3;$i++) {
+                $callback = $array['root'][0]['callback_data'];
+                $j=0;
+                if ($i == 0) {
+                    $response = Category::findOne(['name' => $root->name])->children(1)->all();
+                }else{
+                    if ($i>1) $j++;
+                    $response = Category::findOne(['name' => $array[$callback][$j]['text']])->children(1)->all();
+                }
+                if ($i != 0) $callback = $callback.$i;
+                foreach ($response as $key => $r) {
+                    $array[$callback][$key] = [
+                        'text' => $r->name,
+                        'callback_data' => $callback . ($key + 1),
+                    ];
+                }
             }
-//123123123
+//        }
+        return $array;
+    }
+
+    public function actionGet($name=null){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($name == 'root' || $name == null) {
+            $response = Category::find()->roots()->all();
+        }elseif ($name == 'all'){
+            $response = Category::find()->all();
+        }
+        else{
+            $response = Category::findOne(['name' => $name])->children(1)->all();
+        }
+        foreach ($response as $r) {
+            $array[] = [
+                'text' => $r->name,
+                'callback_data' => $r->id
+            ];
+        }
         return $array;
     }
 }
