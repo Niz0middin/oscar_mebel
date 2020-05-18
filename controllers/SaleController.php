@@ -2,10 +2,11 @@
 
 namespace app\controllers;
 
+use CURLFile;
 use Yii;
 use app\models\Sale;
 use app\models\search\SaleSearch;
-use yii\helpers\Json;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -66,45 +67,39 @@ class SaleController extends Controller
      */
     public function actionCreate()
     {
-        $token='1185997109:AAFqTaqEhTobFjrR9_wYWA70gGvyBcDYfzI';
-        $chatId= 2975459;
-        //$chatId=-1001335263520;
-
-        $text='aksiya';
-        $parametres=[
-            'chat_id'=>$chatId,
-            'text'=>$text,
-        ];
-        $url = 'https://api.telegram.org/bot'.$token.'/sendMessage?'.http_build_query($parametres);
-
-        @file_get_contents($url);
         $model = new Sale();
 
         if ($model->load(Yii::$app->request->post())) {
             $model->start = strtotime($model->start);
             $model->end = strtotime($model->end);
             $model->save();
-            $token='1185997109:AAFqTaqEhTobFjrR9_wYWA70gGvyBcDYfzI';
-            $chatId= 2975459;
-            //$chatId=-1001335263520;
 
-            $text='aksiya';
-            $parametres=[
-                'chat_id'=>$chatId,
-                'text'=>$text,
+            $token = '1185997109:AAFqTaqEhTobFjrR9_wYWA70gGvyBcDYfzI';
+            $chat_id = 42229990;
+            $url = "https://api.telegram.org/bot$token/sendPhoto?chat_id=$chat_id";
+
+            $post_fields = [
+                'chat_id'   => $chat_id,
+                'photo' => new CURLFile(Url::to('@webroot').$model->img)
             ];
-            $url = 'https://api.telegram.org/bot'.$token.'/sendMessage?'.http_build_query($parametres);
+            $this->curlBot($url, $post_fields);
 
-            @file_get_contents($url);
-//            echo "<pre>";
-//            print_r($model->getErrors());
-//            die;
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
             'model' => $model,
         ]);
+    }
+
+
+    public function curlBot($url, $post_fields){
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type:multipart/form-data"]);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+        $output = curl_exec($ch);
     }
 
     /**

@@ -16,6 +16,8 @@ use yii\behaviors\TimestampBehavior;
  * @property int $status
  * @property int|null $created_at
  * @property int|null $updated_at
+ *
+ * @property Category $category
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -37,6 +39,7 @@ class Product extends \yii\db\ActiveRecord
             [['category_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['description'], 'string'],
             [['name', 'img'], 'string', 'max' => 255],
+            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
         ];
     }
 
@@ -62,5 +65,15 @@ class Product extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    /**
+     * Gets query for [[Category]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategory()
+    {
+        return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 }

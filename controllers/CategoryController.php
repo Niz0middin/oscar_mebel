@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Product;
 use Yii;
 use app\models\Category;
 use app\models\search\CategorySearch;
@@ -207,19 +208,33 @@ class CategoryController extends Controller
             $response = Category::find()->all();
         }
         else{
-            $response = Category::findOne(['id' => $id])->children(1)->all();
+            $response = Category::findOne(['id' => $id]);
+            if (!empty($response))
+                $response = $response->children(1)->all();
+            else{
+                $response = null;
+            }
         }
+
         if (!empty($response)){
             $array['status'] = 0;
+            foreach ($response as $key => $r) {
+                $array['data'][$key] = [
+                    'text' => $r->name,
+                    'callback_data' => $r->id
+                ];
+            }
         }else{
-            $array['status'] = 1;
+            $response = Product::findAll(['category_id' => $id]);
+            if (!empty($response)) {
+                $array['data'] = $response;
+                $array['status'] = 1;
+            }else{
+                $array['data'] = null;
+                $array['status'] = 2;
+            }
         }
-        foreach ($response as $key => $r) {
-            $array['data'][$key] = [
-                'text' => $r->name,
-                'callback_data' => $r->id
-            ];
-        }
+
         return $array;
     }
 }
