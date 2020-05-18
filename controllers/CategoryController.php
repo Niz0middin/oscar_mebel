@@ -199,15 +199,15 @@ class CategoryController extends Controller
         return $array;
     }
 
-    public function actionGet($name=null){
+    public function actionGet($id=null){
         Yii::$app->response->format = Response::FORMAT_JSON;
-        if ($name == 'root' || $name == null) {
+        if ($id == 0 || $id == null) {
             $response = Category::find()->roots()->all();
-        }elseif ($name == 'all'){
+        }elseif ($id == 'all'){
             $response = Category::find()->all();
         }
         else{
-            $response = Category::findOne(['name' => $name])->children(1)->all();
+            $response = Category::findOne(['id' => $id])->children(1)->all();
         }
         if (!empty($response)){
             $array['status'] = 0;
@@ -217,7 +217,7 @@ class CategoryController extends Controller
         foreach ($response as $key => $r) {
             $array['data'][$key] = [
                 'text' => $r->name,
-                'callback_data' => 'sc'.$r->id
+                'callback_data' => $r->id
             ];
         }
         return $array;
