@@ -160,12 +160,12 @@ class SaleController extends Controller
 
     public function actionAll(){
         Yii::$app->response->format = Response::FORMAT_JSON;
-        return Sale::find()->all();
+        return Sale::find()->where(['status' => 1])->all();
     }
 
     public function actionLast(){
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $rate = Sale::find()->orderBy(['id' => SORT_DESC])->one();
+        $rate = Sale::find()->where(['status' => 1])->orderBy(['id' => SORT_DESC])->one();
         return $rate;
     }
 
