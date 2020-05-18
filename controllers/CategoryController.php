@@ -209,10 +209,15 @@ class CategoryController extends Controller
         else{
             $response = Category::findOne(['name' => $name])->children(1)->all();
         }
-        foreach ($response as $r) {
-            $array[] = [
+        if (!empty($response)){
+            $array['status'] = 0;
+        }else{
+            $array['status'] = 1;
+        }
+        foreach ($response as $key => $r) {
+            $array['data'][$key] = [
                 'text' => $r->name,
-                'callback_data' => $r->id
+                'callback_data' => 'sc'.$r->id
             ];
         }
         return $array;
