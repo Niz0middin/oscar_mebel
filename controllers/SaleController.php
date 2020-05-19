@@ -75,7 +75,7 @@ class SaleController extends Controller
             $model->save();
 
             $token = '1185997109:AAFqTaqEhTobFjrR9_wYWA70gGvyBcDYfzI';
-            $chat_id = 42229990;
+            $chat_id = 2975459;
             $url = "https://api.telegram.org/bot$token/sendPhoto?chat_id=$chat_id";
 
             $post_fields = [
