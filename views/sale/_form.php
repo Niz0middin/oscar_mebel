@@ -8,6 +8,8 @@ use zhuravljov\yii\widgets\DateTimePicker;
 /* @var $this yii\web\View */
 /* @var $model app\models\Sale */
 /* @var $form yii\widgets\ActiveForm */
+$model->start = isset($model->start) ? date('d.m.Y h:i', $model->start):'';
+$model->end = isset($model->end) ? date('d.m.Y h:i', $model->end):'';
 ?>
 
 <div class="sale-form">
@@ -15,7 +17,7 @@ use zhuravljov\yii\widgets\DateTimePicker;
     <?php $form = ActiveForm::begin(); ?>
 
     <div class="row">
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-6">
             <?php
             echo $form->field($model, 'img')->widget(InputFile::className(), [
                 'language'      => 'ru',

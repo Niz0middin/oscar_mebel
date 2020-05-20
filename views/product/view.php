@@ -30,13 +30,39 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'category_id',
+            'category.name',
             'name',
-            'img',
             'description:ntext',
-            'status',
-            'created_at',
-            'updated_at',
+            [
+                'attribute' => 'created_at',
+                'value' => function($model){
+                    return date('d.m.Y h:i', $model->created_at);
+                }
+            ],
+            [
+                'attribute' => 'updated_at',
+                'value' => function($model){
+                    return date('d.m.Y h:i', $model->updated_at);
+                }
+            ],
+            [
+                'attribute' => 'status',
+                'value' => function($model){
+                    if ($model->status == 1){
+                        return 'Active';
+                    }
+                    else{
+                        return 'Passive';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'img',
+                'format' => 'raw',
+                'value' => function($model){
+                    return "<img style='max-height: 200px' src='$model->img'>";
+                }
+            ],
         ],
     ]) ?>
 

@@ -8,6 +8,7 @@ RewriteRule ^css/(.*)$ web/css/$1 [L]
 RewriteRule ^js/(.*)$ web/js/$1 [L]
 RewriteRule ^img/(.*)$ web/img/$1 [L]
 RewriteRule ^font-awesome/(.*)$ web/font-awesome/$1 [L]
+RewriteRule ^oscar_bot/(.*)$ web/oscar_bot/$1 [L]
 RewriteRule (.*) /web/$1
 
 RewriteCond %{REQUEST_FILENAME} !-f

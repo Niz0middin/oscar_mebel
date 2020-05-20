@@ -17,8 +17,8 @@ class SaleSearch extends Sale
     public function rules()
     {
         return [
-            [['id', 'start', 'end', 'status'], 'integer'],
-            [['img'], 'safe'],
+            [['id', 'status'], 'integer'],
+            [['img', 'start', 'end'], 'safe'],
         ];
     }
 
@@ -59,10 +59,18 @@ class SaleSearch extends Sale
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'start' => $this->start,
-            'end' => $this->end,
             'status' => $this->status,
         ]);
+        if (isset($this->start)){
+            $query->andFilterWhere([
+                'start' => strtotime($this->start),
+            ]);
+        }
+        if (isset($this->end)){
+            $query->andFilterWhere([
+                'end' => strtotime($this->end),
+            ]);
+        }
 
         $query->andFilterWhere(['like', 'img', $this->img]);
 

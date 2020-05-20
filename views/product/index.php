@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Category;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -27,9 +28,22 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
 //            'id',
-            'category.name',
             'name',
-            'img:raw',
+            [
+                'attribute' => 'category_id',
+                'label' => 'Parent',
+                'filter' => \yii\helpers\ArrayHelper::map(Category::find()->leaves()->all(), 'id', 'name'),
+                'value' => function ($model) {
+                    return $model->category->name;
+                }
+            ],
+            [
+                'attribute' => 'img',
+                'format' => 'raw',
+                'value' => function($model){
+                    return "<img style='max-height: 100px' src='$model->img'>";
+                }
+            ],
             'description:ntext',
             //'status',
             //'created_at',
