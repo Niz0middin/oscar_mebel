@@ -31,7 +31,7 @@ bot.onText(/\/start/,(msg)=>{
    });
     
    connection.connect();
-   connection.query(`REPLACE clients (user_id) VALUES(${msg.from.id})`,(err,results,fields)=>{
+   connection.query(`REPLACE client (chat_id) VALUES(${msg.from.id})`,(err,results,fields)=>{
         if(err) console.log('error');
     })
    connection.end()

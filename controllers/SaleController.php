@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Client;
 use CURLFile;
 use Yii;
 use app\models\Sale;
@@ -90,16 +91,17 @@ class SaleController extends Controller
             $model->start = strtotime($model->start);
             $model->end = strtotime($model->end);
             $model->save();
-
+            $clients = Client::find()->all();
             $token = '1185997109:AAFqTaqEhTobFjrR9_wYWA70gGvyBcDYfzI';
-            $chat_id = 2975459;
-            $url = "https://api.telegram.org/bot$token/sendPhoto?chat_id=$chat_id";
-
-            $post_fields = [
-                'chat_id'   => $chat_id,
-                'photo' => new CURLFile(Url::to('@webroot').$model->img)
-            ];
-            $this->curlBot($url, $post_fields);
+            foreach ($clients as $client) {
+                $chat_id = $client->chat_id;
+                $url = "https://api.telegram.org/bot$token/sendPhoto?chat_id=$chat_id";
+                $post_fields = [
+                    'chat_id'   => $chat_id,
+                    'photo' => new CURLFile(Url::to('@webroot').$model->img)
+                ];
+                $this->curlBot($url, $post_fields);
+            }
 
             return $this->redirect(['view', 'id' => $model->id]);
         }
