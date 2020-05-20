@@ -32,6 +32,23 @@ class SaleController extends Controller
         ];
     }
 
+
+    public function beforeAction($action)
+    {
+        $checks = Sale::find()->all();
+        foreach ($checks as $check){
+            if (time()<$check->start || time()>$check->end ){
+                $check->status = 0;
+            }else{
+                $check->status = 1;
+            }
+            $check->save();
+        }
+
+        return parent::beforeAction($action);
+    }
+
+
     /**
      * Lists all Sale models.
      * @return mixed
