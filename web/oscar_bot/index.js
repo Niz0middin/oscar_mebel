@@ -18,7 +18,7 @@ const bot = new TelegramBot(config.TOKEN,{
 bot.onText(/\/start/,(msg)=>{
     
     /*
-    console.log('user_id: '+msg.from.id)
+    console.log('user_id: '+msg.from.id)`
     console.log('username: @'+msg.from.username)
     console.log('first_name: '+msg.from.first_name)
     console.log('last_name: '+msg.from.last_name)
@@ -55,7 +55,7 @@ bot.on('message',(msg)=>{
 
     switch(msg.text){
         case kb.main.catalogues:
-            console.log('katalog'+msg.message_id)
+            //console.log('katalog'+msg.message_id)
             
                 bot.sendMessage(chatId,'Наш каталог',{
                     reply_markup:{
@@ -86,29 +86,41 @@ bot.on('message',(msg)=>{
 
 
         case kb.main.sale:
-            console.log('sale')
+            //console.log('sale')
             
             fetch('http://oscar/sale/all')
             .then(response => response.json())
             .then(data => {
-                bot.sendMessage(chatId,'Акция на OSCAR MEBEL',{
-                    reply_markup:{
-                        keyboard:keyboard.exitabout,
-                        resize_keyboard:true
-                    }
-                })
-                bot.sendChatAction(chatId,'upload_photo')
-                .then(()=>{
-                    var datas = data
-                    datas.forEach((data)=>{
-                        //10 charecterni bowidigini kesib tawimz
-                        bot.sendChatAction(chatId,'upload_photo')
-                        .then(()=>{
-                            bot.sendPhoto(chatId,'.'+data.img.substr(10,data.img.length))
-                        }) 
+                if(data==''){
+                    console.log('empty')
+                    bot.sendMessage(chatId,'⚠️ Извините, на данный момент нет никаких акций 😔',{
+                        reply_markup:{
+                            keyboard:keyboard.exitabout,
+                            resize_keyboard:true
+                        } 
                     })
-                    
-                })
+                }else{
+                    bot.sendMessage(chatId,'🔔 Акция на OSCAR MEBEL',{
+                        reply_markup:{
+                            keyboard:keyboard.exitabout,
+                            resize_keyboard:true
+                        }
+                    })
+                    bot.sendChatAction(chatId,'upload_photo')
+                    .then(()=>{
+                        var datas = data
+                        datas.forEach((data)=>{
+                            //10 charecterni bowidigini kesib tawimz
+                            bot.sendChatAction(chatId,'upload_photo')
+                            .then(()=>{
+                                bot.sendPhoto(chatId,'.'+data.img.substr(10,data.img.length))
+                            }) 
+                        })
+                        
+                    })
+
+                }
+                
                 
              })
             .catch(err => {console(err)})
@@ -182,12 +194,17 @@ bot.on('callback_query',query=>{
             status = data.status //0 -keyboard yoki 1-good
             sub_category = key_value_pairs(data.data) //keyobard
             //callback_data = query.data  //callback_data bu id shuni id ga berish kk
-
-
+            
+            //console.log(data.parent)
+            if(data.parent!=null){
+                //console.log('parent not NULL')
+                sub_category.push([{text:'↖️ Вернуться в суб-каталог',callback_data:data.parent}])
+            }
+            //console.log(sub_category)
 
             //keyboard holati uchun
         if(status==0){
-            console.log('status 0')
+            //console.log('status 0')
             bot.deleteMessage(query.message.chat.id,query.message.message_id)
             .then(()=>{
                 bot.sendMessage(query.message.chat.id,'Выберите раздел чтобы вывести список товаров:',{
@@ -195,6 +212,7 @@ bot.on('callback_query',query=>{
                         inline_keyboard:sub_category, //shuyoga api digi DATA ni assign
                     }
                 })
+                
             })
             
             
@@ -224,7 +242,7 @@ bot.on('callback_query',query=>{
         }
         else{
             console.log('status is not either 0 or 1')
-            bot.sendMessage(query.message.chat.id,'This category is Empty!')
+            bot.sendMessage(query.message.chat.id,'Извините, эта категория пока пуста!')
         }
             
 
