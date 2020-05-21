@@ -1,9 +1,9 @@
 <?php
 
+use kartik\datetime\DateTimePicker;
 use mihaildev\elfinder\InputFile;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use zhuravljov\yii\widgets\DateTimePicker;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Sale */
@@ -11,7 +11,11 @@ use zhuravljov\yii\widgets\DateTimePicker;
 $model->start = isset($model->start) ? date('d.m.Y h:i', $model->start):'';
 $model->end = isset($model->end) ? date('d.m.Y h:i', $model->end):'';
 ?>
-
+<style>
+    input{
+        background-color: white!important;
+    }
+</style>
 <div class="sale-form">
 
     <?php $form = ActiveForm::begin(); ?>
@@ -32,27 +36,33 @@ $model->end = isset($model->end) ? date('d.m.Y h:i', $model->end):'';
             <div class="row">
                 <div class="col-md-6">
                     <?= $form->field($model, 'start')->widget(DateTimePicker::class, [
-                        'clientOptions' => [
-                            'format' => 'dd.mm.yyyy hh:ii',
+                        'options' =>[
+                            'autocomplete'=>'off',
+                            'readonly'=>'true'
+                        ],
+                        'pluginOptions' => [
+//                            'format' => 'dd.mm.yyyy hh:ii',
                             'language' => 'ru',
                             'autoclose' => true,
                         ],
-                        'clientEvents' => [],
                     ]) ?>
                 </div>
                 <div class="col-md-6">
                     <?= $form->field($model, 'end')->widget(DateTimePicker::class, [
-                        'clientOptions' => [
-                            'format' => 'dd.mm.yyyy hh:ii',
+                        'options' =>[
+                            'autocomplete'=>'off',
+                            'readonly'=>'true'
+                        ],
+                        'pluginOptions' => [
+//                            'format' => 'dd.mm.yyyy HH:ii',
                             'language' => 'ru',
                             'autoclose' => true,
                         ],
-                        'clientEvents' => [],
                     ]) ?>
                 </div>
             </div>
             <div class="form-group">
-                <?= Html::submitButton('Save', ['class' => 'btn btn-success btn-block']) ?>
+                <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success btn-block']) ?>
             </div>
         </div>
     </div>

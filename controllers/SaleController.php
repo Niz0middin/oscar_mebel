@@ -7,6 +7,7 @@ use CURLFile;
 use Yii;
 use app\models\Sale;
 use app\models\search\SaleSearch;
+use yii\filters\AccessControl;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -24,6 +25,17 @@ class SaleController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'update', 'delete', 'view'],
+                'rules' => [
+                    [
+                        'actions' => ['index', 'create', 'update', 'delete', 'view'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

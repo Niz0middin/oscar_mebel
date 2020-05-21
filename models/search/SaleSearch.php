@@ -18,7 +18,7 @@ class SaleSearch extends Sale
     {
         return [
             [['id', 'status'], 'integer'],
-            [['img', 'start', 'end'], 'safe'],
+            [[/*'img', */'start', 'end'], 'safe'],
         ];
     }
 
@@ -61,12 +61,12 @@ class SaleSearch extends Sale
             'id' => $this->id,
             'status' => $this->status,
         ]);
-        if (isset($this->start)){
+        if (!empty($this->start)){
             $query->andFilterWhere([
                 'start' => strtotime($this->start),
             ]);
         }
-        if (isset($this->end)){
+        if (!empty($this->end)){
             $query->andFilterWhere([
                 'end' => strtotime($this->end),
             ]);

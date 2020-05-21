@@ -6,6 +6,7 @@ use app\models\Product;
 use Yii;
 use app\models\Category;
 use app\models\search\CategorySearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,6 +23,17 @@ class CategoryController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'update', 'delete', 'view'],
+                'rules' => [
+                    [
+                        'actions' => ['index', 'create', 'update', 'delete', 'view'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

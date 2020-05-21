@@ -73,15 +73,15 @@ class Category extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'         => Yii::t('app', 'ID'),
-            'name'       => Yii::t('app', 'Name'),
-            'tree'       => Yii::t('app', 'Tree'),
-            'lft'        => Yii::t('app', 'Lft'),
-            'rgt'        => Yii::t('app', 'Rgt'),
-            'depth'      => Yii::t('app', 'Depth'),
-            'position'   => Yii::t('app', 'Position'),
-            'created_at' => Yii::t('app', 'Created At'),
-            'updated_at' => Yii::t('app', 'Updated At'),
+            'id'         => 'ID',
+            'name'       => 'Имя',
+            'tree'       => 'Корень',
+            'lft'        => 'Левый',
+            'rgt'        => 'Правый',
+            'depth'      => 'Глубина',
+            'position'   => 'Позиция',
+            'created_at' => 'Создан',
+            'updated_at' => 'Изменен',
         ];
     }
 

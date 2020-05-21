@@ -43,10 +43,10 @@ class Sale extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'img' => 'Img',
-            'start' => 'Start',
-            'end' => 'End',
-            'status' => 'Status',
+            'img' => 'Изображение',
+            'start' => 'Начало акции',
+            'end' => 'Окончание акции',
+            'status' => 'Статус',
         ];
     }
 }

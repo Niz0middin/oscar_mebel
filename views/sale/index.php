@@ -8,15 +8,20 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\search\SaleSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Sales';
+$this->title = 'Акции';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<style>
+    input{
+        background-color: white!important;
+    }
+</style>
 <div class="sale-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Sale', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Создать', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -31,28 +36,34 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'start',
                 'value' => function ($model) {
-                    return date('d.m.Y h:i', $model->start);
+                    return date('Y-m-d h:i', $model->start);
                 },
                 'filter' => DateTimePicker::widget([
                     'model' => $searchModel,
                     'attribute' => 'start',
+                    'options' =>[
+                        'readonly'=>'true'
+                    ],
                     'pluginOptions' => [
                         'autoclose' => true,
-                        'format' => 'dd.mm.yyyy hh:ii'
+//                        'format' => 'dd.mm.yyyy hh:ii'
                     ]
                 ])
             ],
             [
                 'attribute' => 'end',
                 'value' => function ($model) {
-                    return date('d.m.Y h:i', $model->end);
+                    return date('Y-m-d h:i', $model->end);
                 },
                 'filter' => DateTimePicker::widget([
                     'model' => $searchModel,
                     'attribute' => 'end',
+                    'options' =>[
+                        'readonly'=>'true'
+                    ],
                     'pluginOptions' => [
                         'autoclose' => true,
-                        'format' => 'dd.mm.yyyy hh:ii'
+//                        'format' => 'dd.mm.yyyy hh:ii'
                     ]
                 ])
             ],

@@ -8,7 +8,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\search\ProductSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Products';
+$this->title = 'Продукты';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="product-index">
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Product', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Создать', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -31,12 +31,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             [
                 'attribute' => 'category_id',
-                'label' => 'Parent',
+                'label' => 'Родитель',
                 'filter' => \yii\helpers\ArrayHelper::map(Category::find()->leaves()->all(), 'id', 'name'),
                 'value' => function ($model) {
                     return $model->category->name;
                 }
             ],
+            'description:ntext',
             [
                 'attribute' => 'img',
                 'format' => 'raw',
@@ -44,7 +45,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return "<img style='max-height: 100px' src='$model->img'>";
                 }
             ],
-            'description:ntext',
             //'status',
             //'created_at',
             //'updated_at',

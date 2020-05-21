@@ -57,13 +57,13 @@ class Product extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'category_id' => 'Category ID',
-            'name' => 'Name',
-            'img' => 'Img',
-            'description' => 'Description',
-            'status' => 'Status',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'category_id' => 'Категория',
+            'name' => 'Имя',
+            'img' => 'Изображение',
+            'description' => 'Описание',
+            'status' => 'Статус',
+            'created_at' => 'Создан',
+            'updated_at' => 'Изменен',
         ];
     }
 

@@ -15,7 +15,7 @@ use app\models\Category;
     <?php $form = ActiveForm::begin(); ?>
 
     <div class='form-group field-attribute-parentId'>
-        <?= Html::label('Parent', 'parent', ['class' => 'control-label']);?>
+        <?= Html::label('Родитель', 'parent', ['class' => 'control-label']);?>
         <?= Html::dropdownList(
             'Category[parentId]',
             $model->parentId,
@@ -30,7 +30,7 @@ use app\models\Category;
 <!--    --><?php //echo $form->field($model, 'position')->textInput(['type' => 'number']) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Изменить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

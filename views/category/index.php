@@ -8,7 +8,7 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\models\search\CategorySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Categories';
+$this->title = 'Категория';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="category-index">
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Category', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Создать', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>
@@ -32,7 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             [
                 'attribute' => 'tree',
-                'label' => 'Root',
                 'filter' => Category::find()->roots()->select('name, id')->indexBy('id')->column(),
                 'value' => function ($model)
                 {
@@ -44,6 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'parent',
+                'label' => 'Родитель',
                 'value' => function($model){
                     if (isset($model->parent->name)){
                         return $model->parent->name;
