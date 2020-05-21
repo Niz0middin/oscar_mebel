@@ -26,29 +26,29 @@ $this->params['breadcrumbs'][] = $this->title;
         ]) ?>
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'name',
-            'tree',
-            'lft',
-            'rgt',
-            'depth',
-            'position',
-            [
-                'attribute' => 'created_at',
-                'value' => function($model){
-                    return date('Y-m-d h:i', $model->created_at);
-                }
-            ],
-            [
-                'attribute' => 'updated_at',
-                'value' => function($model){
-                    return date('Y-m-d h:i', $model->updated_at);
-                }
-            ],
-        ],
-    ]) ?>
+<!--    --><?php //echo DetailView::widget([
+//        'model' => $model,
+//        'attributes' => [
+//            'id',
+//            'name',
+//            'tree',
+//            'lft',
+//            'rgt',
+//            'depth',
+//            'position',
+//            [
+//                'attribute' => 'created_at',
+//                'value' => function($model){
+//                    return date('Y-m-d h:i', $model->created_at);
+//                }
+//            ],
+//            [
+//                'attribute' => 'updated_at',
+//                'value' => function($model){
+//                    return date('Y-m-d h:i', $model->updated_at);
+//                }
+//            ],
+//        ],
+//    ]) ?>
 
 </div>

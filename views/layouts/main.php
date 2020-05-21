@@ -69,9 +69,10 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; Oscar Mebel <?= date('Y') ?></p>
+        <p class="pull-left">&copy; Oscar Mebel <?= date('Y') ?> </p>
+        <a style="margin-left: 10px" href="https://webartstudio.netlify.app/"> Разработано "WebArtStudio"</a>
 
-        <p class="pull-right"><?= Yii::powered() ?></p>
+<!--        <p class="pull-right">--><?//= Yii::powered() ?><!--</p>-->
     </div>
 </footer>
 

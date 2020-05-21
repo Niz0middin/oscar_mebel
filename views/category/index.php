@@ -31,17 +31,6 @@ $this->params['breadcrumbs'][] = $this->title;
 //            'id',
             'name',
             [
-                'attribute' => 'tree',
-                'filter' => Category::find()->roots()->select('name, id')->indexBy('id')->column(),
-                'value' => function ($model)
-                {
-                    if ( ! $model->isRoot())
-                        return $model->parents()->one()->name;
-
-                    return '-';
-                }
-            ],
-            [
                 'attribute' => 'parent',
                 'label' => 'Родитель',
                 'value' => function($model){
@@ -51,6 +40,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         return '-';
                     }
                 },
+            ],
+            [
+                'attribute' => 'tree',
+                'filter' => Category::find()->roots()->select('name, id')->indexBy('id')->column(),
+                'value' => function ($model)
+                {
+                    if ( ! $model->isRoot())
+                        return $model->parents()->one()->name;
+
+                    return '-';
+                }
             ],
 //            'parent.name',
             // 'lft',
