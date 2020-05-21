@@ -180,57 +180,30 @@ class CategoryController extends Controller
         }
     }
 
-    public function actionList(){
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $roots = Category::find()->roots()->all();
-//        $leaves = Category::find()->leaves()->all();
-//        $one_leaves = Category::findOne(['name' => 'Telefon'])->leaves()->all();
-//        $array['root'] = $roots;
-//        foreach ($roots as $k => $root) {
-        $root = $roots[0];
-            $array['root'][0] = [
-                'text' => $root->name,
-                'callback_data' => 'sc'.$root->tree
-            ];
-            for ($i=0;$i<3;$i++) {
-                $callback = $array['root'][0]['callback_data'];
-                $j=0;
-                if ($i == 0) {
-                    $response = Category::findOne(['name' => $root->name])->children(1)->all();
-                }else{
-                    if ($i>1) $j++;
-                    $response = Category::findOne(['name' => $array[$callback][$j]['text']])->children(1)->all();
-                }
-                if ($i != 0) $callback = $callback.$i;
-                foreach ($response as $key => $r) {
-                    $array[$callback][$key] = [
-                        'text' => $r->name,
-                        'callback_data' => $callback . ($key + 1),
-                    ];
-                }
-            }
-//        }
-        return $array;
-    }
-
     public function actionGet($id=null){
         Yii::$app->response->format = Response::FORMAT_JSON;
         if ($id == 0 || $id == null) {
             $response = Category::find()->roots()->all();
+            $parent = null;
         }elseif ($id == 'all'){
             $response = Category::find()->all();
+            $parent = null;
         }
         else{
             $response = Category::findOne(['id' => $id]);
-            if (!empty($response))
+            if (!empty($response)) {
+                $parent = $response->parents(1)->one();
                 $response = $response->children(1)->all();
-            else{
+            }else{
                 $response = null;
+                $parent = null;
             }
         }
 
         if (!empty($response)){
             $array['status'] = 0;
+            $array['parent']['text'] = $parent->name;
+            $array['parent']['callback_data'] = $parent->id;
             foreach ($response as $key => $r) {
                 $array['data'][$key] = [
                     'text' => $r->name,
@@ -240,9 +213,13 @@ class CategoryController extends Controller
         }else{
             $response = Product::findAll(['category_id' => $id]);
             if (!empty($response)) {
+                $array['parent']['text'] = $parent->name;
+                $array['parent']['callback_data'] = $parent->id;
                 $array['data'] = $response;
                 $array['status'] = 1;
             }else{
+                $array['parent']['text'] = $parent->name;
+                $array['parent']['callback_data'] = $parent->id;
                 $array['data'] = null;
                 $array['status'] = 2;
             }
