@@ -69,13 +69,13 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'status',
-                'filter' => [1=>'Active', 0=>'Passive'],
+                'filter' => [1=>'Активный', 0=>'Неактивный'],
                 'value' => function($model){
                     if ($model->status == 1){
-                        return 'Active';
+                        return 'Активный';
                     }
                     else{
-                        return 'Passive';
+                        return 'Неактивный';
                     }
                 }
             ],

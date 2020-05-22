@@ -202,8 +202,7 @@ class CategoryController extends Controller
 
         if (!empty($response)){
             $array['status'] = 0;
-//            $array['parent']['text'] = $parent->name;
-            $array['parent']/*['callback_data']*/ = $parent->id;
+            $array['parent'] = $parent->id;
             foreach ($response as $key => $r) {
                 $array['data'][$key] = [
                     'text' => $r->name,
@@ -211,15 +210,13 @@ class CategoryController extends Controller
                 ];
             }
         }else{
-            $response = Product::findAll(['category_id' => $id]);
+            $response = Product::findAll(['category_id' => $id, 'status' => 1]);
             if (!empty($response)) {
-//                $array['parent']['text'] = $parent->name;
-                $array['parent']/*['callback_data']*/ = $parent->id;
+                $array['parent'] = $parent->id;
                 $array['data'] = $response;
                 $array['status'] = 1;
             }else{
-//                $array['parent']['text'] = $parent->name;
-                $array['parent']/*['callback_data']*/ = $parent->id;
+                $array['parent'] = $parent->id;
                 $array['data'] = null;
                 $array['status'] = 2;
             }

@@ -32,7 +32,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'status')->dropDownList([1 => 'Active', 0 => 'Passive']) ?>
+    <?= $form->field($model, 'status')->dropDownList([1 => 'Активный', 0 => 'Неактивный']) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>

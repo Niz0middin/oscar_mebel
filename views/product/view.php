@@ -30,7 +30,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'category.name',
+            [
+                'attribute' => 'category.name',
+                'label' => 'Категория',
+            ],
             'name',
             'description:ntext',
             [
@@ -49,10 +52,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'status',
                 'value' => function($model){
                     if ($model->status == 1){
-                        return 'Active';
+                        return 'Активный';
                     }
                     else{
-                        return 'Passive';
+                        return 'Неактивный';
                     }
                 }
             ],
