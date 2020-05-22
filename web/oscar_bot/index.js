@@ -241,8 +241,8 @@ bot.on('callback_query',query=>{
             
         }
         else{
-            console.log('status is not either 0 or 1')
-            bot.sendMessage(query.message.chat.id,'Извините, эта категория пока пуста!')
+            console.log('status is not either 0 or 1\nэта категория пока пуста')
+            bot.sendMessage(query.message.chat.id,'⚠️ Извините, эта категория пока пуста!')
         }
             
 
