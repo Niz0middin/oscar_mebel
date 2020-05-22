@@ -31,10 +31,22 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             [
                 'attribute' => 'category_id',
-                'label' => 'Родитель',
+                'label' => 'Категория',
+                'format' => 'raw',
                 'filter' => \yii\helpers\ArrayHelper::map(Category::find()->leaves()->all(), 'id', 'name'),
                 'value' => function ($model) {
-                    return $model->category->name;
+                    $cats = Category::find()->leaves()->all();
+                    $child = false;
+                    foreach ($cats as $cat){
+                        if ($cat->id == $model->category->id){
+                            $child = true;
+                        }
+                    }
+                    if ($child) {
+                        return $model->category->name;
+                    }else{
+                        return '<p style="color: red">---</p>';
+                    }
                 }
             ],
             'description:ntext',
@@ -45,7 +57,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     return "<img style='max-height: 100px' src='$model->img'>";
                 }
             ],
-            //'status',
+            [
+                'attribute' => 'status',
+                'filter' => [1=>'Активный', 0=>'Неактивный'],
+                'value' => function($model){
+                    if ($model->status == 1){
+                        return 'Активный';
+                    }
+                    else{
+                        return 'Неактивный';
+                    }
+                }
+            ],
             //'created_at',
             //'updated_at',
 
