@@ -45,18 +45,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     if ($child) {
                         return $model->category->name;
                     }else{
-                        return '<p style="color: red">---</p>';
+                        return '<p style="color: red">Неправильная категория</p>';
                     }
                 }
             ],
             'description:ntext',
-            [
-                'attribute' => 'img',
-                'format' => 'raw',
-                'value' => function($model){
-                    return "<img style='max-height: 100px' src='$model->img'>";
-                }
-            ],
             [
                 'attribute' => 'status',
                 'filter' => [1=>'Активный', 0=>'Неактивный'],
@@ -67,6 +60,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     else{
                         return 'Неактивный';
                     }
+                }
+            ],
+            [
+                'attribute' => 'img',
+                'format' => 'raw',
+                'value' => function($model){
+                    return "<img style='max-height: 100px' src='$model->img'>";
                 }
             ],
             //'created_at',
