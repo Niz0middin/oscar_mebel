@@ -1,5 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api')
 const config = require('./config')
+const responses = require('./responses')
 const helper = require('./helper')
 const keyboard = require('./keyboard')
 const kb = require('./keyboard-buttons')
@@ -32,11 +33,11 @@ bot.onText(/\/start/,(msg)=>{
     
    connection.connect();
    connection.query(`REPLACE client (chat_id) VALUES(${msg.from.id})`,(err,results,fields)=>{
-        if(err) console.log('error');
+        if(err) console.log('DataBase Error');
     })
    connection.end()
 
-    const text = `Добро пожаловать на наш магазин ${msg.from.first_name}\nВыберетье команду:`
+    const text = responses.welcome1 + msg.from.first_name + responses.welcome2
     bot.sendMessage(helper.getChatId(msg),text,{
         reply_markup:{
             keyboard:keyboard.main,
@@ -57,7 +58,7 @@ bot.on('message',(msg)=>{
         case kb.main.catalogues:
             //console.log('katalog'+msg.message_id)
             
-                bot.sendMessage(chatId,'Наш каталог',{
+                bot.sendMessage(chatId,responses.catalogue,{
                     reply_markup:{
                         keyboard: keyboard.exit,
                         resize_keyboard:true
@@ -69,7 +70,7 @@ bot.on('message',(msg)=>{
                     .then(data=>{
                         var send_to_root=key_value_pairs(data.data)
                         //console.log(send_to_root)
-                        bot.sendMessage(chatId,'Выберите один из каталогов:',{
+                        bot.sendMessage(chatId,responses.catalogue_with_inline_keyboard,{
                             reply_markup:{
                                 inline_keyboard:send_to_root
                             }
@@ -92,15 +93,15 @@ bot.on('message',(msg)=>{
             .then(response => response.json())
             .then(data => {
                 if(data==''){
-                    console.log('empty')
-                    bot.sendMessage(chatId,'⚠️ Извините, на данный момент нет никаких акций 😔',{
+                    console.log('Sale Empty')
+                    bot.sendMessage(chatId,responses.sale_empty,{
                         reply_markup:{
                             keyboard:keyboard.exitabout,
                             resize_keyboard:true
                         } 
                     })
                 }else{
-                    bot.sendMessage(chatId,'🔔 Акция на OSCAR MEBEL',{
+                    bot.sendMessage(chatId,responses.sale,{
                         reply_markup:{
                             keyboard:keyboard.exitabout,
                             resize_keyboard:true
@@ -128,7 +129,7 @@ bot.on('message',(msg)=>{
             
 
         case kb.main.about:
-            console.log('about')
+            //console.log('about')
             const title = config.about
             bot.sendLocation(chatId,41.354796,69.253512)
             .then(()=>{
@@ -144,8 +145,7 @@ bot.on('message',(msg)=>{
        
 
         case kb.exitabout.back:
-            const message1 = `Выберитье раздел:`
-            bot.sendMessage(helper.getChatId(msg),message1,{
+            bot.sendMessage(helper.getChatId(msg),responses.back_main_menu,{
                 reply_markup:{
                     keyboard:keyboard.main,
                     resize_keyboard:true
@@ -162,7 +162,7 @@ bot.on('message',(msg)=>{
             .then(data=>{
                 var send_to_root=key_value_pairs(data.data)
                 //console.log(send_to_root)
-                bot.sendMessage(chatId,'Выберите один из каталогов:',{
+                bot.sendMessage(chatId,responses.catalogue_with_inline_keyboard,{
                     reply_markup:{
                         inline_keyboard:send_to_root
                     }
@@ -174,8 +174,7 @@ bot.on('message',(msg)=>{
 
 
         case kb.exit.exit:
-            const message = `Выберитье раздел:`
-            bot.sendMessage(helper.getChatId(msg),message,{
+            bot.sendMessage(helper.getChatId(msg),responses.back_main_menu,{
                 reply_markup:{
                     keyboard:keyboard.main,
                     resize_keyboard:true
@@ -198,7 +197,7 @@ bot.on('callback_query',query=>{
             //console.log(data.parent)
             if(data.parent!=null){
                 //console.log('parent not NULL')
-                sub_category.push([{text:'↖️ Вернуться в суб-каталог',callback_data:data.parent}])
+                sub_category.push([{text:responses.back_btn_sub_catalogue,callback_data:data.parent}])
             }
             //console.log(sub_category)
 
@@ -207,7 +206,7 @@ bot.on('callback_query',query=>{
             //console.log('status 0')
             bot.deleteMessage(query.message.chat.id,query.message.message_id)
             .then(()=>{
-                bot.sendMessage(query.message.chat.id,'Выберите раздел чтобы вывести список товаров:',{
+                bot.sendMessage(query.message.chat.id,responses.sub_catalogue_msg,{
                     reply_markup:{
                         inline_keyboard:sub_category, //shuyoga api digi DATA ni assign
                     }
@@ -230,7 +229,7 @@ bot.on('callback_query',query=>{
                             caption: good.description,
                             reply_markup:{
                                 inline_keyboard:[
-                                    [{text:'Для информации',url:'https://t.me/Oscarofficefurniture_bot'}]
+                                    [{text:responses.information_btn_txt,url:responses.information_btn_url}]
                                 ]
                             }
                         })
@@ -241,19 +240,12 @@ bot.on('callback_query',query=>{
             
         }
         else{
-            console.log('status is not either 0 or 1\nэта категория пока пуста')
-            bot.sendMessage(query.message.chat.id,'⚠️ Извините, эта категория пока пуста!')
+            //console.log('status is not either 0 or 1\nэта категория пока пуста')
+            bot.sendMessage(query.message.chat.id,responses.empty_category)
         }
-            
-
-
-        })
         
+       })
         
-
-
-
-
 })
 
 
@@ -298,9 +290,6 @@ bot.on('callback_query',query=>{
 })
 
 */
-
-
-
 //////////////```Plugins```///////////////////////////
 function key_value_pairs(obj) 
    {
