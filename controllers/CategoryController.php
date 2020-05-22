@@ -156,11 +156,17 @@ class CategoryController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->isRoot())
+//        if ($model->isRoot())
+//            $model->deleteWithChildren();
+//        else
+//            $model->delete();
+
+        if ($model->children(1)->one() || $model->products)
+            throw new NotFoundHttpException('Вы не можете удалить эту категорию. У категории есть сабкатегория или товар.');
+        elseif ($model->isRoot())
             $model->deleteWithChildren();
         else
             $model->delete();
-
         return $this->redirect(['index']);
     }
 
